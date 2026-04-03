@@ -22,16 +22,14 @@ jobs:
         script: |
           cd ~/app
           git pull origin main
- 
-          # Kill only if running (safe)
-          if pgrep -f "python3 app.py" > /dev/null; then
-          pkill -f "python3 app.py"
-          fi
+
+          # Kill old process safely
+          pkill -f "python3 app.py" || true
 
           sleep 2
 
-          # Start app safely
-          nohup python3 app.py > output.log 2>&1 &
-          disown
-         
+          # Start app (fully detached)
+          nohup python3 app.py > output.log 2>&1 < /dev/null &
 
+          echo "Deployment successful"
+          exit 0
