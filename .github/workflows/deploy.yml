@@ -20,10 +20,9 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-         set -e
          cd ~/app
          git pull origin main
          pkill -f app.py || true
          nohup python3 app.py > output.log 2>&1 &
-         exit 0
+         
 
