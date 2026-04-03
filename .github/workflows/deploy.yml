@@ -20,9 +20,18 @@ jobs:
         username: ec2-user
         key: ${{ secrets.EC2_SSH_KEY }}
         script: |
-         cd ~/app
-         git pull origin main
-         pkill -f app.py || true
-         nohup python3 app.py > output.log 2>&1 &
+          cd ~/app
+          git pull origin main
+ 
+          # Kill only if running (safe)
+          if pgrep -f "python3 app.py" > /dev/null; then
+          pkill -f "python3 app.py"
+          fi
+
+          sleep 2
+
+          # Start app safely
+          nohup python3 app.py > output.log 2>&1 &
+          disown
          
 
